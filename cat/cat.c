@@ -1,4 +1,5 @@
 #include "cat.h"
+#include "common.h"
 
 // Парсинг флагов командной строки
 void parse_flags(int argc, char *argv[], CatFlags *flags) {
@@ -68,9 +69,9 @@ void parse_flags(int argc, char *argv[], CatFlags *flags) {
 
 // Обработка одного файла
 void process_file(const char *filename, CatFlags *flags, CatState *state) {
-  FILE *file = fopen(filename, "r");
+  FILE *file = open_file(filename);
   if (file == NULL) {
-    fprintf(stderr, "s21_cat: %s: No such file or directory\n", filename);
+    print_error(filename, "No such file or directory");
     return;
   }
 
@@ -119,7 +120,7 @@ void print_line(const char *line, CatFlags *flags, CatState *state) {
 
     // Обработка конца строки ($)
     if (c == '\n') {
-      if (flags->flag_e || flags->flag_E || flags->flag_v) {
+      if (flags->flag_e || flags->flag_E) {
         printf("$");
       }
       printf("\n");
@@ -173,16 +174,21 @@ int cat_main(int argc, char *argv[]) {
   // Поиск первого аргумента, который не является флагом
   int file_found = 0;
   for (int i = 1; i < argc; i++) {
-    // Проверяем, является ли аргумент флагом
+    // Проверяем, является ли аргумент флагом или stdin
     int is_flag = 0;
     if (argv[i][0] == '-') {
       // Проверяем, это просто "-", который означает stdin
       if (strlen(argv[i]) == 1) {
-        is_flag = 0;  // "-" означает stdin
+        // "-" означает stdin
+        process_input(&flags, &state);
+        file_found = 1;
+        is_flag = 1;  // Продолжаем, но не обрабатываем как файл
       } else {
-        // Если это комбинированный флаг, он не может быть файлом
+        // Если это комбинированный флаг или длинный флаг (--flag), он не может быть файлом
         if (strlen(argv[i]) > 1 && argv[i][1] != '-') {
           is_flag = 1;
+        } else if (argv[i][1] == '-') {
+          is_flag = 1;  // Длинный флаг (--flag)
         }
       }
     }

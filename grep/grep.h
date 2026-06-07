@@ -38,10 +38,13 @@ int grep_main(int argc, char *argv[]);
 int parse_flags(int argc, char *argv[], GrepFlags *flags, char patterns[][MAX_PATTERN_LEN], int *pattern_count);
 
 // Обработка одного файла
-void process_file(const char *filename, regex_t *regexes, int pattern_count, GrepFlags *flags);
+void process_file(const char *filename, regex_t *regexes, int pattern_count, GrepFlags *flags, int filename_needed, int total_file_count);
 
 // Поиск и вывод совпадений
-void find_matches(FILE *file, const char *filename, regex_t *regexes, int pattern_count, GrepFlags *flags);
+void find_matches(FILE *file, const char *filename, regex_t *regexes, int pattern_count, GrepFlags *flags, int filename_needed, int is_single_file);
+
+// Вывод строки
+void print_line(const char *line, const char *filename, int line_number, GrepFlags *flags, int filename_needed);
 
 // Освобождение ресурсов
 void free_resources(regex_t *regexes, int pattern_count);
