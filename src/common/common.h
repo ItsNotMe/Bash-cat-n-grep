@@ -23,4 +23,4 @@ void trim_newline(char *str);
 // Проверить, является ли строка пустой (содержит только \n)
 int is_blank_line(const char *str);
 
-#endif  // S21_COMMON_H
+#endif // S21_COMMON_H
