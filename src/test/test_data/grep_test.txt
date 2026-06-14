@@ -1,0 +1,8 @@
+Simple grep test file.
+This line contains the word pattern.
+Another line without pattern.
+Pattern appears again in this line.
+No pattern here either.
+PATTERN in uppercase should match with -i flag.
+pattern at the beginning of the line.
+Ending with pattern.

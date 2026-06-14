@@ -36,9 +36,13 @@ typedef struct {
 // Основная функция grep
 int grep_main(int argc, char *argv[]);
 
-// Парсинг флагов и паттернов
-int parse_flags(int argc, char *argv[], GrepFlags *flags,
-                char patterns[][MAX_PATTERN_LEN], int *pattern_count);
+// Парсинг флагов и паттернов (возвращает индекс начала файлов или -1 при ошибке)
+int parse_args(int argc, char *argv[], GrepFlags *flags, char patterns[][MAX_PATTERN_LEN],
+               int *pattern_count, int *has_explicit_pattern);
+
+// Обработка файлов (возвращает 0 при успехе, 2 при ошибках)
+int process_input_files(int argc, char *argv[], int start_index, regex_t *regexes, int pattern_count,
+                        GrepFlags *flags);
 
 // Обработка одного файла
 // Возвращает 0 при успехе, 2 при ошибке (файл не найден)
