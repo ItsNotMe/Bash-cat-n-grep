@@ -1,5 +1,0 @@
-Hello World!
-This is a test file.
-Line three with some content.
-Line four with more content.
-Line five with even more content.

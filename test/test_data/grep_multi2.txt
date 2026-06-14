@@ -1,3 +1,0 @@
-Line in file 2
-Pattern here too
-No match here

@@ -1,3 +1,0 @@
-Pattern in file 1
-Another line
-Line with pattern again
