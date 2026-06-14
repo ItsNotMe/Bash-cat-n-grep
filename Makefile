@@ -6,7 +6,6 @@ CFLAGS = -Wall -Wextra -Werror -std=c11 -D_GNU_SOURCE
 SRC_CAT = cat
 SRC_GREP = grep
 SRC_COMMON = common
-BUILD_DIR = build
 
 # Target files
 TARGET_CAT = $(SRC_CAT)/s21_cat
@@ -14,11 +13,9 @@ TARGET_GREP = $(SRC_GREP)/s21_grep
 
 # cat sources
 CAT_SRC = $(SRC_CAT)/cat.c
-CAT_OBJ = $(BUILD_DIR)/cat.o
 
 # grep sources
 GREP_SRC = $(SRC_GREP)/grep.c
-GREP_OBJ = $(BUILD_DIR)/grep.o
 
 # common sources
 COMMON_SRC = $(SRC_COMMON)/common.c
@@ -26,21 +23,16 @@ COMMON_SRC = $(SRC_COMMON)/common.c
 # Default target
 all: clean s21_cat s21_grep
 
-# Create build directory
-$(BUILD_DIR):
-	mkdir -p $(BUILD_DIR)
-
 # Build s21_cat
-s21_cat: $(BUILD_DIR) $(CAT_SRC) $(COMMON_SRC)
+s21_cat: $(CAT_SRC) $(COMMON_SRC)
 	$(CC) $(CFLAGS) -o $(TARGET_CAT) $(CAT_SRC) $(COMMON_SRC) -I. -I$(SRC_COMMON)
 
 # Build s21_grep
-s21_grep: $(BUILD_DIR) $(GREP_SRC) $(COMMON_SRC)
+s21_grep: $(GREP_SRC) $(COMMON_SRC)
 	$(CC) $(CFLAGS) -o $(TARGET_GREP) $(GREP_SRC) $(COMMON_SRC) -I. -I$(SRC_COMMON)
 
 # Clean build artifacts
 clean:
-	rm -rf $(BUILD_DIR)
 	rm -f $(TARGET_CAT) $(TARGET_GREP)
 
 # Run all integration tests
@@ -73,8 +65,16 @@ valgrind: valgrind-cat valgrind-grep
 cppcheck:
 	cppcheck --enable=warning,performance --error-exitcode=1 .
 
-# Run all checks (tests + valgrind + cppcheck)
-check: test valgrind cppcheck
+# Run all checks (tests + valgrind + cppcheck + style)
+check: test valgrind cppcheck style
+
+# Run clang-format style check
+style:
+	clang-format -n cat/cat.c grep/grep.c common/common.c
+
+# Run clang-format to fix style issues
+style-fix:
+	clang-format -i cat/cat.c grep/grep.c common/common.c
 
 # Phony targets
 .PHONY: all clean s21_cat s21_grep test test-cat test-grep valgrind valgrind-cat valgrind-grep cppcheck check
